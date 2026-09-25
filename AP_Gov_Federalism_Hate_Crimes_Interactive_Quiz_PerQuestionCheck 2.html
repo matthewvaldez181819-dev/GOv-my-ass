@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Gov Debate #2 Interactive Quiz</title>
+<style>
+:root {
+  --bg:#f5f7fb; --card:#ffffff; --ink:#172033; --muted:#667085;
+  --navy:#173a63; --blue:#235d9f; --red:#b42318; --green:#16794b;
+  --border:#d9e1ec; --soft:#edf3fa; --gold:#a56a00;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+header{background:linear-gradient(135deg,#173a63,#235d9f);color:white;padding:34px 20px 30px}
+.header-inner{max-width:1050px;margin:auto}
+h1{margin:0 0 8px;font-size:clamp(1.8rem,4vw,3rem);line-height:1.08}
+.subtitle{margin:0;opacity:.92;max-width:850px}
+main{max-width:1050px;margin:0 auto;padding:22px 16px 70px}
+.toolbar{position:sticky;top:0;z-index:20;background:rgba(245,247,251,.95);backdrop-filter:blur(10px);padding:10px 0 12px;border-bottom:1px solid var(--border);margin-bottom:18px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;background:var(--navy);color:#fff}
+button.secondary{background:#fff;color:var(--navy);border:1px solid var(--border)}
+button.danger{background:#fff;color:var(--red);border:1px solid #efc6c2}
+.scorebox{margin-left:auto;background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-weight:800}
+.progress-wrap{height:8px;background:#e8edf5;border-radius:999px;overflow:hidden;margin-top:10px}
+#progress{height:100%;width:0;background:linear-gradient(90deg,#235d9f,#16794b);transition:width .25s}
+.intro{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{background:var(--soft);color:var(--navy);font-weight:700;border-radius:999px;padding:5px 9px;font-size:.86rem}
+.section-title{margin:28px 0 12px;color:var(--navy);font-size:1.45rem}
+.question{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin:12px 0;box-shadow:0 2px 8px rgba(16,24,40,.03)}
+.qhead{display:flex;gap:10px;align-items:flex-start}
+.qnum{flex:0 0 auto;width:34px;height:34px;border-radius:10px;background:var(--soft);color:var(--navy);display:grid;place-items:center;font-weight:900}
+.qtext{font-weight:800;font-size:1.03rem;margin-top:3px}
+.options{margin-top:12px;display:grid;gap:8px}
+label.option{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:#fff}
+label.option:hover{background:#f9fbfd}
+label.option.correct{border-color:#72c59d;background:#effaf5}
+label.option.wrong{border-color:#e6a19a;background:#fff3f2}
+select{width:100%;max-width:650px;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:1rem}
+select.correct{border-color:#72c59d;background:#effaf5}
+select.wrong{border-color:#e6a19a;background:#fff3f2}
+.feedback{display:none;margin-top:12px;border-left:4px solid var(--blue);background:#f7faff;padding:10px 12px;border-radius:6px}
+.feedback.show{display:block}
+.feedback.good{border-left-color:var(--green);background:#effaf5}
+.feedback.bad{border-left-color:var(--red);background:#fff3f2}
+.tag{display:inline-block;font-size:.76rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:#475467;background:#f2f4f7;padding:3px 7px;border-radius:7px;margin-bottom:8px}
+.state-tag{color:#744210;background:#fff4d6}
+.summary{display:none;margin:22px 0;background:#fff;border:2px solid var(--navy);border-radius:16px;padding:20px}
+.summary.show{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+.metric{background:var(--soft);border-radius:12px;padding:12px}
+.metric b{display:block;font-size:1.35rem;color:var(--navy)}
+.note{font-size:.9rem;color:var(--muted)}
+footer{text-align:center;color:var(--muted);margin-top:35px;font-size:.88rem}
+@media (max-width:650px){.scorebox{margin-left:0} .toolbar{position:static}}
+
+.check-one{
+  margin-top:12px;
+  background:#235d9f;
+  color:#fff;
+  border:0;
+  border-radius:9px;
+  padding:9px 13px;
+  font-weight:800;
+  cursor:pointer;
+}
+.check-one:hover{filter:brightness(.95)}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.85">AP U.S. Government & Politics</div>
+    <h1>Federal Hate-Crimes Law & Federalism — Interactive Quiz</h1>
+    <p class="subtitle">Built from your constitutional debate casebook. Includes multiple choice, dropdown matching, difficult case distinctions, constitutional traps, and a dedicated states/places drill.</p>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <div class="bar">
+      <button id="checkAll">Check All Answers</button>
+      <button class="secondary" id="shuffle">Shuffle Questions</button>
+      <button class="danger" id="reset">Reset Quiz</button>
+      <div class="scorebox" id="scorebox">Score: — / 61</div>
+    </div>
+    <div class="progress-wrap"><div id="progress"></div></div>
+  </div>
+
+  <section class="intro">
+    <strong>Quiz design:</strong> 41 multiple-choice questions + 20 dropdown questions.
+    <div class="chips">
+      <span class="chip">Federalism</span><span class="chip">Commerce Clause</span><span class="chip">Tenth Amendment</span>
+      <span class="chip">First Amendment</span><span class="chip">Fourteenth Amendment</span><span class="chip">Supreme Court Cases</span>
+      <span class="chip">States & Places</span><span class="chip">Debate Traps</span>
+    </div>
+    <p class="note">Choose an answer, then press the “Check Answer” button at the bottom of that question. Only that question will be graded. State questions intentionally distinguish real historical examples from classroom hypotheticals.</p>
+  </section>
+
+  <div id="summary" class="summary"></div>
+
+  <h2 class="section-title">Part I — Multiple Choice</h2>
+  <div id="mcq"></div>
+
+  <h2 class="section-title">Part II — Dropdown / State & Concept Matching</h2>
+  <div id="dropdown"></div>
+
+  <footer>Single-file HTML quiz • No internet connection required</footer>
+</main>
+
+<script>
+const MCQ = [{"q": "What was the debate’s central constitutional question?", "opts": ["Whether hate crimes are morally wrong", "Whether Congress may create or expand federal criminal liability for bias-motivated violence that often resembles ordinary local crime", "Whether states may abolish their criminal codes", "Whether the President may prosecute hate crimes without Congress"], "a": 1, "exp": "The guide says the key issue was federalism and criminal jurisdiction: whether Congress has constitutional authority to federalize bias-motivated violence that may otherwise look like local assault, murder, arson, or vandalism."}, {"q": "Which statement best captures the opposition’s master frame?", "opts": ["Hate crimes should not be punished", "All civil-rights laws are unconstitutional", "The question is jurisdiction, not whether hate is morally wrong", "Only the Supreme Court may prosecute hate crimes"], "a": 2, "exp": "The opposition repeatedly conceded that hate crimes are serious and victims deserve justice, while insisting that moral seriousness does not itself establish federal jurisdiction."}, {"q": "Which constitutional provision was the debate’s principal textual basis for Congress’s commerce power?", "opts": ["Article I, Section 8, Clause 3", "Article II, Section 2", "Article III, Section 1", "Article VI, Clause 2"], "a": 0, "exp": "Article I, Section 8, Clause 3 is the Commerce Clause."}, {"q": "What did the opposition argue the Tenth Amendment protects?", "opts": ["An unlimited federal police power", "A meaningful residual sphere of state authority over powers not delegated to the United States", "Only state power over taxation", "Only state power over elections"], "a": 1, "exp": "The opposition treated ordinary criminal law and police powers as core state responsibilities unless Congress can identify a valid enumerated federal power."}, {"q": "Which is the best description of the affirmative’s 'backstop' theory?", "opts": ["Federal law completely replaces state criminal law", "States lose all authority once the FBI becomes involved", "Federal authority supplements state enforcement when state protection is absent or inadequate", "Only state courts may apply the HCPA"], "a": 2, "exp": "The affirmative explicitly described federal law as a safety net or backstop, not a total takeover of state authority."}, {"q": "What was the opposition’s strongest response to the 'backstop' theory?", "opts": ["The federal government may never cooperate with states", "If state insufficiency alone justifies federal intervention, the limiting principle could disappear and federal power could spread into other traditional state areas", "Backstops are prohibited by the First Amendment", "States cannot reform their own laws"], "a": 1, "exp": "The opposition used an education slippery-slope analogy to ask where the federal backstop principle stops."}, {"q": "What did United States v. Lopez (1995) contribute to the opposition’s argument?", "opts": ["It held every school regulation unconstitutional", "It showed that Congress’s Commerce Clause power has limits when regulating local, noneconomic activity", "It upheld a bias-motivated sentencing enhancement", "It created the HCPA"], "a": 1, "exp": "Lopez was the central AP Gov case used to show that an attenuated interstate-commerce connection cannot automatically federalize local conduct."}, {"q": "Why did the guide describe United States v. Morrison (2000) as especially useful to the opposition?", "opts": ["It involved noneconomic gender-motivated violence and rejected a broad federal Commerce Clause theory", "It involved flag burning", "It required identical state criminal codes", "It upheld the HCPA"], "a": 0, "exp": "Morrison was used as the closest analogy for the idea that even serious discriminatory violence does not automatically create federal Commerce Clause authority."}, {"q": "Which statement about Jones v. United States is the corrected version the guide says to remember?", "opts": ["The Court struck down the entire federal arson law as unconstitutional", "The Court narrowly interpreted the federal arson statute so it did not cover the owner-occupied private home; the decision was 9-0", "The Court upheld a hate-crime enhancement", "The case involved a motel serving interstate travelers"], "a": 1, "exp": "The guide specifically warns not to memorize the transcript’s overstatement. Jones is primarily a narrow statutory-interpretation case and federalism analogy."}, {"q": "What made United States v. Hill the affirmative’s strongest Commerce Clause example?", "opts": ["The assault happened in a private house", "The victim was preparing goods/packages for interstate shipment at an Amazon fulfillment center", "The case involved only speech", "The state had no criminal law"], "a": 1, "exp": "Hill supplied a direct commercial nexus rather than an indirect chain: the assault interfered with ongoing activity involving interstate shipments."}, {"q": "What was the opposition’s best limitation on Hill?", "opts": ["Hill proves the HCPA can never apply federally", "Hill is a narrow as-applied example and does not prove that every local hate crime has a commerce nexus", "Hill held that all states must use identical sentencing", "Hill involved no interstate commerce"], "a": 1, "exp": "The opposition contrasted Hill’s direct Amazon shipment connection with an assault in a house, parking lot, or local school."}, {"q": "Why did the affirmative invoke Heart of Atlanta Motel v. United States?", "opts": ["To show the First Amendment protects racist association", "To show Commerce Clause authority can support national civil-rights regulation in a commercial setting", "To show state criminal law is supreme", "To challenge the HCPA statute of limitations"], "a": 1, "exp": "Heart of Atlanta was used as an example of Congress using commerce power to address civil-rights harms involving a commercial enterprise and interstate travelers."}, {"q": "Which distinction best separates Heart of Atlanta from Morrison?", "opts": ["Heart of Atlanta involved a commercial motel; Morrison involved noneconomic violent conduct", "Morrison involved a commercial motel; Heart of Atlanta involved flag burning", "Both involved identical facts", "Neither involved the Commerce Clause"], "a": 0, "exp": "The guide treats this as a major quiz trap: commercial regulation is not the same as regulating noneconomic violent conduct."}, {"q": "What is the opposition’s 'limiting principle' challenge?", "opts": ["Whether Congress can define any crime it wants", "At what point an indirect economic effect becomes too attenuated to justify federal regulation of a local violent act", "Whether state judges can read federal cases", "Whether states may tax businesses"], "a": 1, "exp": "The opposition repeatedly asked what prevents almost every serious local crime from becoming federal if indirect economic effects are enough."}, {"q": "What was the affirmative’s supermarket hypothetical designed to show?", "opts": ["Every supermarket is federally owned", "Bias violence can deter members of a targeted group from shopping and participating in interstate economic activity", "Only grocery stores can experience hate crimes", "The Tenth Amendment does not apply to businesses"], "a": 1, "exp": "The hypothetical linked targeted violence, reduced shopping, goods from other states, and aggregate economic effects."}, {"q": "What was the opposition’s most direct response to the supermarket hypothetical?", "opts": ["Customers are legally required to return", "Any violent bombing could scare customers away regardless of bias motive, so the commerce effect may arise from the violence itself", "Supermarkets do not engage in commerce", "The Fourteenth Amendment bans supermarkets"], "a": 1, "exp": "The opposition argued the hypothetical proves too much because ordinary violence can produce the same economic avoidance."}, {"q": "What phrase from crossfire became a memorable rebuttal to the supermarket example?", "opts": ["Could I just go to a second supermarket?", "Necessary and proper!", "No exceptions in justice!", "Fifty states, one court!"], "a": 0, "exp": "The guide highlights 'Could I just go to a second supermarket?' as a memorable crossfire reply."}, {"q": "Which case held that irrelevant racist association evidence could not simply be used against a defendant at sentencing?", "opts": ["Dawson v. Delaware", "Wisconsin v. Mitchell", "United States v. Lopez", "Heart of Atlanta Motel v. United States"], "a": 0, "exp": "Dawson turned on relevance: protected association could not simply aggravate punishment when it was irrelevant to the sentencing issue."}, {"q": "Which case upheld a bias-motivated penalty enhancement?", "opts": ["Wisconsin v. Mitchell", "Dawson v. Delaware", "Texas v. Johnson", "United States v. Morrison"], "a": 0, "exp": "Mitchell is a frequent trap: it upheld, rather than invalidated, a hate-crime sentencing enhancement."}, {"q": "What is the cleanest First Amendment synthesis from Dawson and Mitchell?", "opts": ["Hateful belief is always criminal", "Protected speech may never be evidence", "Hateful belief is not itself criminal conduct, but relevant expression may help prove motive for separate criminal conduct", "Bias can never affect punishment"], "a": 2, "exp": "The guide repeatedly stresses the relevance connection: belief alone is not the crime, but speech can sometimes be evidentiary when tied to criminal conduct."}, {"q": "What did Brandenburg v. Ohio contribute to the opposition’s argument?", "opts": ["Extremist advocacy is often protected unless it meets the incitement standard", "All offensive speech is automatically criminal", "The Commerce Clause applies to schools", "States cannot regulate violence"], "a": 0, "exp": "Brandenburg was Exhibit F and was used to emphasize that hateful or extremist advocacy remains protected unless it crosses the incitement line."}, {"q": "What did Texas v. Johnson contribute to the debate?", "opts": ["It made violent hate crimes protected symbolic speech", "It reinforced that offensive symbolic political expression can be protected by the First Amendment", "It created the federal hate-crime statute", "It abolished state police powers"], "a": 1, "exp": "The guide warns against overreading Johnson. Flag burning as expression is not the same as violent hate crime."}, {"q": "Which statement best describes the Fourteenth Amendment dispute?", "opts": ["The affirmative invoked equal-protection/civil-rights concerns; the opposition stressed that Equal Protection primarily restrains state action and does not automatically federalize private assaults", "Both sides agreed the Fourteenth Amendment was irrelevant", "The opposition argued the Fourteenth Amendment creates a general federal police power", "The affirmative argued states may ignore equal protection"], "a": 0, "exp": "The guide emphasizes the state-action distinction and the need for an additional constitutional hook where private violence is involved."}, {"q": "Which statement about the Necessary and Proper Clause best matches the guide?", "opts": ["It was the debate’s central independently developed argument", "The teacher mentioned 'necessary and proper,' but the prepared debate did not develop a separate Necessary and Proper Clause analysis", "It gives Congress an unlimited standalone police power", "It is found in the Tenth Amendment"], "a": 1, "exp": "The guide says not to invent a separate Necessary and Proper Clause argument that the debaters did not actually develop."}, {"q": "Which statement about the Supremacy Clause best matches the guide?", "opts": ["It was the principal argument of both sides", "It is background: valid federal law is supreme, but the threshold issue here is whether Congress has valid authority to enact the federal law", "It gives states power to nullify federal law", "It is the source of state police power"], "a": 1, "exp": "The Supremacy Clause was not central in the debate; the prior question is whether Congress validly acted under an enumerated power."}, {"q": "Was the debate mainly about separation of powers or federalism?", "opts": ["Separation of powers, because the President dominated the debate", "Federalism, because the core issue was vertical national-state authority", "Neither; it was only about criminal procedure", "Separation of powers, because Congress and the Supreme Court are identical institutions"], "a": 1, "exp": "The guide explicitly labels this a quiz trap: the main division was vertical federalism, not horizontal separation among branches."}, {"q": "What was the affirmative’s strongest response to the claim that hate-crime motive is too subjective?", "opts": ["Motive is never investigated in criminal law", "The FBI uses structured investigation, state/local cooperation, witness outreach, and training; bias alone is not enough", "The First Amendment is suspended during investigations", "Every biased statement automatically proves a hate crime"], "a": 1, "exp": "The affirmative stressed a rigorous process and the need to connect bias to the criminal act."}, {"q": "Which statement is a likely quiz trap about disparate impact?", "opts": ["A crime disproportionately affecting women is automatically a gender hate crime", "Disparate impact alone does not prove discriminatory motive", "Gender can never be a protected category", "Statistics are unconstitutional"], "a": 1, "exp": "The sexual-assault crossfire helped draw the distinction between disproportionate impact and motive-based targeting."}, {"q": "What was the opposition’s preferred remedy when a state hate-crime law was inadequate?", "opts": ["No punishment", "State-level reform through state institutions", "Automatic federal takeover of all criminal law", "A presidential executive order replacing the state code"], "a": 1, "exp": "The opposition argued for state-level reform, not impunity."}, {"q": "Which empirical claim was used by the affirmative to show continuing prevalence in schools/colleges/universities from 2018–2022?", "opts": ["Fewer than 100 offenses", "More than 4,300 reported offenses", "Exactly 50 offenses", "More than 100,000 offenses"], "a": 1, "exp": "The prepared packet gave the clearer figure of more than 4,300 reported offenses."}, {"q": "Which pair of category counts appears in the prepared notes?", "opts": ["1,690 anti-Black and 745 anti-Jewish", "745 anti-Black and 1,690 anti-Jewish", "100 anti-Black and 50 anti-Jewish", "2,009 anti-Black and 1,963 anti-Jewish"], "a": 0, "exp": "The guide lists 1,690 anti-Black and 745 anti-Jewish offenses; it also notes about 900 anti-LGBTQ in the clearer prepared source."}, {"q": "Why did the opposition say statistics alone were insufficient?", "opts": ["Statistics cannot ever be used in public policy", "Prevalence shows a problem is serious, but does not itself identify an enumerated federal power", "Statistics prove all crimes are state crimes", "Only courts may collect statistics"], "a": 1, "exp": "This is a core AP distinction between policy necessity and constitutional authority."}, {"q": "What was the federal-resource argument made by the opposition?", "opts": ["Federal law enforcement has unlimited resources", "Investigators, prosecutors, courts, and prisons are finite, so federal attention might be better concentrated on uniquely national crimes such as terrorism, trafficking, cybercrime, and interstate organized crime", "State law enforcement may not spend money", "The Commerce Clause bars all federal spending"], "a": 1, "exp": "The resource argument was a policy-efficiency claim, not the opposition’s strongest constitutional argument."}, {"q": "Which statement best captures the local-prosecutor argument?", "opts": ["Local prosecutors are always constitutionally superior", "State/local prosecutors may have better familiarity with witnesses, community, state law, and local police relationships", "Federal prosecutors cannot speak with witnesses", "Only local prosecutors may enforce civil rights"], "a": 1, "exp": "The packet explicitly listed these forms of local expertise."}, {"q": "What was the affirmative response to the fairness hypothetical involving a white victim and a minority-group victim?", "opts": ["Hate-crime law protects only minorities", "Majority-group victims can also be covered if they are targeted because of a protected characteristic", "Victim identity is irrelevant to all law", "The HCPA applies only to federal employees"], "a": 1, "exp": "The affirmative argued that the law focuses on bias-based targeting, not a rule that only minority victims receive protection."}, {"q": "What was the guide’s caution about the Alabama 'forum-shopping' example?", "opts": ["It was a Supreme Court holding", "It was a hypothetical, challenged as unrealistic; it did not establish actual offender forum-shopping", "It occurred in Hill", "It was the Birmingham bombing"], "a": 1, "exp": "Alabama appeared both as a real historical site (Birmingham) and as a speculative weak-law destination in a crossfire hypothetical."}, {"q": "Which event occurred in Birmingham, Alabama in 1963 and was used by the affirmative?", "opts": ["An Amazon warehouse assault", "A Black church bombing that killed four girls and injured 22 people", "A flag-burning protest", "The Lopez gun-zone incident"], "a": 1, "exp": "The Birmingham church bombing was used to show community-wide terror and the historical civil-rights context."}, {"q": "What did the Sean Kennedy example represent?", "opts": ["A South Carolina state-law-gap example used by the affirmative, later countered by the opposition with state-reform and motive arguments", "A Texas symbolic-speech case", "A Wisconsin sentencing case", "A federal motel case"], "a": 0, "exp": "Sean Kennedy was killed in South Carolina in 2007; the guide presents the same example as evidence that both sides interpreted differently."}, {"q": "What is the guide’s key warning about Matthew Shepard?", "opts": ["His killers could not be prosecuted before HCPA", "His killers were prosecuted severely under state law; his case still helped inspire the 2009 HCPA", "His case was United States v. Hill", "His case occurred in South Carolina"], "a": 1, "exp": "The policy argument for federal protection is distinct from the fact that state criminal law already punished the underlying murder/kidnapping."}, {"q": "Which statement about double jeopardy/statute-of-limitations crossfire is safest to memorize?", "opts": ["The crossfire’s legal conclusions were fully reliable and should be memorized word-for-word", "The topic was raised, but the guide says the discussion was legally imprecise and should be treated as a concern rather than settled doctrine", "Double jeopardy never applies in America", "Every new charge automatically defeats double jeopardy"], "a": 1, "exp": "The guide explicitly labels this discussion legally imprecise."}, {"q": "Why does the guide call the Title VII argument weak if used as a complete substitute for HCPA?", "opts": ["Title VII is about employment discrimination, not a general violent-crime code", "Title VII was repealed", "Title VII is a state constitution", "Title VII concerns only interstate highways"], "a": 0, "exp": "The notes raised Title VII, but the guide flags the category mismatch between employment-discrimination law and criminal hate-crime law."}];
+const DD = [{"q": "State/Place Match: The 1963 Black church bombing used in the affirmative opening occurred in ____.", "opts": ["", "Alabama", "South Carolina", "Virginia", "Wisconsin", "Delaware", "Ohio", "Texas", "California", "Wyoming", "Georgia", "Massachusetts"], "a": "Alabama", "exp": "Birmingham, Alabama was both the site of the 1963 church bombing and later appeared in a separate hypothetical about weaker state laws."}, {"q": "State Match: Sean Kennedy was killed in 2007 in ____.", "opts": ["", "Alabama", "South Carolina", "Virginia", "Wisconsin", "Delaware", "Ohio", "Texas", "California", "Wyoming", "Georgia", "Massachusetts"], "a": "South Carolina", "exp": "South Carolina was used as the affirmative’s state-protection-gap example; the opposition replied with state reform and disputed-motive arguments."}, {"q": "State Match: United States v. Hill / the Amazon fulfillment-center example was connected in the debate to ____.", "opts": ["", "Alabama", "South Carolina", "Virginia", "Wisconsin", "Delaware", "Ohio", "Texas", "California", "Wyoming", "Georgia", "Massachusetts"], "a": "Virginia", "exp": "Virginia was tied to Hill and the claim that state law did not cover sexual orientation in the relevant way."}, {"q": "State Match: The bias-enhancement case was Wisconsin v. ____.", "opts": ["", "Mitchell", "Dawson", "Johnson", "Lopez", "Morrison", "Hill"], "a": "Mitchell", "exp": "Wisconsin v. Mitchell upheld a bias-motivated sentence enhancement."}, {"q": "State Match: Dawson v. ____ was used to show that irrelevant protected association cannot simply aggravate punishment.", "opts": ["", "Wisconsin", "Delaware", "Ohio", "Texas", "Virginia"], "a": "Delaware", "exp": "Dawson v. Delaware turned on relevance."}, {"q": "State Match: Brandenburg v. ____ was the opposition’s incitement / extremist advocacy authority.", "opts": ["", "Ohio", "Texas", "Georgia", "California", "Massachusetts"], "a": "Ohio", "exp": "Brandenburg v. Ohio was Exhibit F."}, {"q": "State Match: The symbolic-expression case was ____ v. Johnson.", "opts": ["", "Texas", "California", "Wyoming", "Virginia", "Alabama"], "a": "Texas", "exp": "Texas v. Johnson protected offensive symbolic expression such as flag burning."}, {"q": "State/Place Match: Heart of Atlanta Motel was associated with ____.", "opts": ["", "Georgia", "Virginia", "Ohio", "Texas", "Wisconsin"], "a": "Georgia", "exp": "Atlanta, Georgia was the commercial civil-rights/Commerce Clause example."}, {"q": "State Match: The packet compared ____ and Texas to illustrate that different state criminal statutes/penalties do not automatically violate equal protection.", "opts": ["", "California", "Delaware", "Ohio", "Virginia", "South Carolina"], "a": "California", "exp": "California/Texas was the state-law-variation comparison."}, {"q": "State Match: Which state appeared with South Carolina in a source-time note about states lacking general hate-crime laws?", "opts": ["", "Wyoming", "Wisconsin", "Georgia", "Ohio", "Massachusetts"], "a": "Wyoming", "exp": "The guide warns to treat this only as a claim in the notes at the time, not as a timeless current-law fact."}, {"q": "State Match: Which state appeared only in an incidental online-speech hypothetical and was not a substantive doctrinal state example?", "opts": ["", "Massachusetts", "Virginia", "Alabama", "Texas", "Delaware"], "a": "Massachusetts", "exp": "Massachusetts is a transcript-minutiae distractor, not a core doctrinal state example."}, {"q": "Case Match: ____ is the required AP Gov case most central to the debate’s Commerce Clause limit.", "opts": ["", "United States v. Lopez", "Texas v. Johnson", "Dawson v. Delaware", "Wisconsin v. Mitchell"], "a": "United States v. Lopez", "exp": "Lopez is the key required AP Gov case for applying federalism and Commerce Clause limits."}, {"q": "Case Match: ____ involved the federal civil remedy for gender-motivated violence and was used as a close analogy for noneconomic violence.", "opts": ["", "United States v. Morrison", "United States v. Hill", "Heart of Atlanta Motel v. United States", "Jones v. United States"], "a": "United States v. Morrison", "exp": "Morrison was opposition Exhibit A."}, {"q": "Case Match: ____ should be remembered mainly as a narrow statutory-interpretation case involving an owner-occupied home, not as a simple Lopez-style strike-down.", "opts": ["", "Jones v. United States", "United States v. Lopez", "United States v. Hill", "Brandenburg v. Ohio"], "a": "Jones v. United States", "exp": "The guide flags the transcript’s inaccurate shorthand and gives the corrected treatment."}, {"q": "Concept Match: Powers over health, safety, morality, ordinary criminal law, and local law enforcement are commonly described in this debate as state ____.", "opts": ["", "police powers", "commerce powers", "treaty powers", "war powers"], "a": "police powers", "exp": "The opposition’s structural case rested heavily on traditional state police powers."}, {"q": "Concept Match: Congress has listed constitutional authorities rather than a general police power; these are called ____ powers.", "opts": ["", "enumerated", "reserved", "inherent state", "municipal"], "a": "enumerated", "exp": "The federal government must identify an enumerated constitutional source of authority."}, {"q": "Concept Match: The opposition’s question 'What is the constitutional ____ principle?' asks where federal power stops.", "opts": ["", "limiting", "supremacy", "majority", "symbolic"], "a": "limiting", "exp": "This phrase is one of the opposition’s most important Commerce Clause challenges."}, {"q": "Evidence Match: A direct threatening text tied to an actual crime was contrasted with mere ____ membership to explain evidentiary relevance.", "opts": ["", "KKK", "Congress", "FBI", "Supreme Court"], "a": "KKK", "exp": "The debate contrasted a concrete statement of intent with mere membership/association when explaining Dawson-style relevance."}, {"q": "Date Match: The Matthew Shepard and James Byrd Jr. Hate Crimes Prevention Act at the center of the debate was enacted in ____.", "opts": ["", "1963", "1995", "2000", "2009", "2019"], "a": "2009", "exp": "2009 is one of the guide’s must-know dates."}, {"q": "Data Match: The prepared notes cite more than ____ reported school/college/university hate-crime offenses from 2018–2022.", "opts": ["", "430", "4,300", "10,000", "43,000"], "a": "4,300", "exp": "The guide uses the prepared packet’s clearer figure."}];
+let orderMCQ = [...Array(MCQ.length).keys()];
+let orderDD = [...Array(DD.length).keys()];
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+function isStateQuestion(q) {
+  const terms = ['State', 'Alabama', 'South Carolina', 'Virginia', 'Wisconsin', 'Delaware', 'Ohio', 'Texas', 'California', 'Wyoming', 'Georgia', 'Massachusetts', 'Birmingham', 'Sean Kennedy'];
+  return terms.some(t => q.includes(t));
+}
+
+function render() {
+  const mc = document.getElementById('mcq');
+  const dd = document.getElementById('dropdown');
+  mc.innerHTML = '';
+  dd.innerHTML = '';
+
+  orderMCQ.forEach((idx, displayIndex) => {
+    const item = MCQ[idx];
+    const div = document.createElement('article');
+    div.className = 'question';
+    div.dataset.type = 'mcq';
+    div.dataset.idx = idx;
+    div.innerHTML = `
+      <div class="tag ${isStateQuestion(item.q)?'state-tag':''}">${isStateQuestion(item.q)?'States / Places':'Multiple Choice'}</div>
+      <div class="qhead"><div class="qnum">${displayIndex+1}</div><div class="qtext">${escapeHtml(item.q)}</div></div>
+      <div class="options">
+        ${item.opts.map((op, oi)=>`
+          <label class="option">
+            <input type="radio" name="mcq-${idx}" value="${oi}">
+            <span><b>${String.fromCharCode(65+oi)}.</b> ${escapeHtml(op)}</span>
+          </label>`).join('')}
+      </div>
+      <button class="check-one" type="button">Check Answer</button>
+      <button class="check-one" type="button">Check Answer</button>
+      <div class="feedback"><strong></strong><div></div></div>`;
+    mc.appendChild(div);
+  });
+
+  orderDD.forEach((idx, displayIndex) => {
+    const item = DD[idx];
+    const div = document.createElement('article');
+    div.className = 'question';
+    div.dataset.type = 'dd';
+    div.dataset.idx = idx;
+    div.innerHTML = `
+      <div class="tag state-tag">${isStateQuestion(item.q)?'State Match':'Dropdown Match'}</div>
+      <div class="qhead"><div class="qnum">${displayIndex+1}</div><div class="qtext">${escapeHtml(item.q)}</div></div>
+      <div class="options">
+        <select id="dd-${idx}" aria-label="${escapeHtml(item.q)}">
+          ${item.opts.map(op => `<option value="${escapeHtml(op)}">${op ? escapeHtml(op) : 'Choose an answer…'}</option>`).join('')}
+        </select>
+      </div>
+      <div class="feedback"><strong></strong><div></div></div>`;
+    dd.appendChild(div);
+  });
+
+  updateProgress();
+  document.getElementById('summary').classList.remove('show');
+  document.getElementById('scorebox').textContent = `Score: — / ${MCQ.length+DD.length}`;
+}
+
+function grade() {
+  let correct = 0, answered = 0, stateCorrect = 0, stateTotal = 0, stateAnswered = 0;
+
+  document.querySelectorAll('.question').forEach(card => {
+    const type = card.dataset.type, idx = Number(card.dataset.idx);
+    const fb = card.querySelector('.feedback');
+    const strong = fb.querySelector('strong'), body = fb.querySelector('div');
+    let ok = false, did = false, exp = '';
+
+    if(type === 'mcq') {
+      const item = MCQ[idx];
+      const chosen = card.querySelector('input[type=radio]:checked');
+      card.querySelectorAll('label.option').forEach(x=>x.classList.remove('correct','wrong'));
+      if(chosen) {
+        did = true;
+        const val = Number(chosen.value);
+        ok = val === item.a;
+        const chosenLabel = chosen.closest('label.option');
+        chosenLabel.classList.add(ok ? 'correct' : 'wrong');
+        const correctInput = card.querySelector(`input[value="${item.a}"]`);
+        if(correctInput) correctInput.closest('label.option').classList.add('correct');
+      }
+      exp = item.exp;
+      if(isStateQuestion(item.q)) {
+        stateTotal++; if(did) stateAnswered++; if(ok) stateCorrect++;
+      }
+    } else {
+      const item = DD[idx];
+      const sel = card.querySelector('select');
+      sel.classList.remove('correct','wrong');
+      if(sel.value) {
+        did = true;
+        ok = sel.value === item.a;
+        sel.classList.add(ok ? 'correct' : 'wrong');
+      }
+      exp = item.exp + (did && !ok ? ` Correct answer: ${item.a}.` : '');
+      if(isStateQuestion(item.q)) {
+        stateTotal++; if(did) stateAnswered++; if(ok) stateCorrect++;
+      }
+    }
+
+    if(did) answered++;
+    if(ok) correct++;
+
+    fb.className = 'feedback show ' + (did ? (ok ? 'good':'bad') : 'bad');
+    strong.textContent = !did ? 'Not answered' : (ok ? 'Correct' : 'Incorrect');
+    body.textContent = exp;
+  });
+
+  const total = MCQ.length + DD.length;
+  const pct = Math.round((correct/total)*100);
+  document.getElementById('scorebox').textContent = `Score: ${correct} / ${total} (${pct}%)`;
+  document.getElementById('progress').style.width = `${Math.round((answered/total)*100)}%`;
+
+  let label = pct >= 90 ? 'AP-level mastery' : pct >= 80 ? 'Strong' : pct >= 70 ? 'Developing' : 'Review recommended';
+  const summary = document.getElementById('summary');
+  summary.innerHTML = `
+    <h2 style="margin-top:0;color:var(--navy)">Quiz Results</h2>
+    <div class="grid">
+      <div class="metric"><span>Total Score</span><b>${correct} / ${total}</b>${pct}%</div>
+      <div class="metric"><span>Answered</span><b>${answered} / ${total}</b></div>
+      <div class="metric"><span>States / Places</span><b>${stateCorrect} / ${stateTotal}</b>${stateAnswered} attempted</div>
+      <div class="metric"><span>Level</span><b style="font-size:1.05rem">${label}</b></div>
+    </div>
+    <p class="note">Study the red explanations first. The hardest traps in this unit are: policy need vs. constitutional power, direct vs. indirect commerce nexus, Mitchell vs. Dawson, and remembering which state belongs to each case/example.</p>`;
+  summary.classList.add('show');
+  summary.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+
+function gradeCard(card) {
+  const type = card.dataset.type;
+  const idx = Number(card.dataset.idx);
+  const fb = card.querySelector('.feedback');
+  const strong = fb.querySelector('strong');
+  const body = fb.querySelector('div');
+
+  let ok = false, did = false, exp = '';
+
+  if(type === 'mcq') {
+    const item = MCQ[idx];
+    const chosen = card.querySelector('input[type=radio]:checked');
+
+    card.querySelectorAll('label.option').forEach(x => x.classList.remove('correct','wrong'));
+
+    if(chosen) {
+      did = true;
+      const val = Number(chosen.value);
+      ok = val === item.a;
+
+      chosen.closest('label.option').classList.add(ok ? 'correct' : 'wrong');
+
+      // If wrong, reveal the correct answer immediately.
+      if(!ok) {
+        const correctInput = card.querySelector(`input[value="${item.a}"]`);
+        if(correctInput) correctInput.closest('label.option').classList.add('correct');
+      }
+    }
+
+    exp = item.exp;
+
+  } else {
+    const item = DD[idx];
+    const sel = card.querySelector('select');
+
+    sel.classList.remove('correct','wrong');
+
+    if(sel.value) {
+      did = true;
+      ok = sel.value === item.a;
+      sel.classList.add(ok ? 'correct' : 'wrong');
+    }
+
+    exp = item.exp + (did && !ok ? ` Correct answer: ${item.a}.` : '');
+  }
+
+  if(did) {
+    fb.className = 'feedback show ' + (ok ? 'good' : 'bad');
+    strong.textContent = ok ? 'Correct' : 'Incorrect';
+    body.textContent = exp;
+  }
+
+  updateLiveScore();
+}
+
+function updateLiveScore() {
+  const total = MCQ.length + DD.length;
+  let correct = 0, checked = 0;
+
+  document.querySelectorAll('.question').forEach(card => {
+    const fb = card.querySelector('.feedback');
+    if(!fb.classList.contains('show')) return;
+
+    checked++;
+    const type = card.dataset.type;
+    const idx = Number(card.dataset.idx);
+
+    if(type === 'mcq') {
+      const chosen = card.querySelector('input[type=radio]:checked');
+      if(chosen && Number(chosen.value) === MCQ[idx].a) correct++;
+    } else {
+      const sel = card.querySelector('select');
+      if(sel.value && sel.value === DD[idx].a) correct++;
+    }
+  });
+
+  document.getElementById('scorebox').textContent = checked
+    ? `Checked: ${checked} / ${total} • Correct: ${correct}`
+    : `Score: — / ${total}`;
+}
+
+function updateProgress() {
+  const total = MCQ.length + DD.length;
+  let answered = 0;
+  document.querySelectorAll('[data-type="mcq"]').forEach(card => {
+    if(card.querySelector('input:checked')) answered++;
+  });
+  document.querySelectorAll('[data-type="dd"] select').forEach(sel => {
+    if(sel.value) answered++;
+  });
+  document.getElementById('progress').style.width = `${Math.round((answered/total)*100)}%`;
+}
+
+
+document.addEventListener('change', () => {
+  updateProgress();
+});
+
+document.addEventListener('click', (event) => {
+  const btn = event.target.closest('.check-one');
+  if(!btn) return;
+  const card = btn.closest('.question');
+  if(card) gradeCard(card);
+});
+
+document.getElementById('checkAll').addEventListener('click', grade);
+document.getElementById('reset').addEventListener('click', () => {
+  if(confirm('Reset all answers and feedback?')) render();
+});
+document.getElementById('shuffle').addEventListener('click', () => {
+  const shuffle = arr => arr.sort(() => Math.random() - 0.5);
+  orderMCQ = shuffle([...orderMCQ]);
+  orderDD = shuffle([...orderDD]);
+  render();
+});
+render();
+</script>
+</body>
+</html>
